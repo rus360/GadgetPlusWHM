@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Management System</title>
+    <title>Gadget+ WHM</title>
     <style>
         body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Specify the desired font family */
@@ -22,6 +22,12 @@
             margin-bottom: 70px;
             color: #333;
         }
+        h1 {
+    margin-bottom: 70px;
+    color: #333;
+    user-select: none; /* Prevent text selection */
+}
+
         
         .input-container {
             display: flex;
@@ -117,7 +123,7 @@ input[type="number"].product-quantity {
     </style>
 </head>
 <body>
-    <h1>Gadget+ Warehouse Management System</h1>
+    <h1>Gadget+ Warehouse Management</h1>
     <div id="product-container">
         <div class="input-container">
             
@@ -132,8 +138,12 @@ input[type="number"].product-quantity {
     <div id="total-price"></div>
     <button onclick="generateQR()">Generate QR</button>
     <div id="qr-codes"></div>
-
+    <button onclick="redirectToExportPage()">Export</button>
     <script>
+        function redirectToExportPage() {
+            // Redirect the user to the export.html page
+            window.location.href = "export_page.html";
+        }
         function addProduct() {
     // Create input fields for product name, price, and quantity
     const productContainer = document.getElementById("product-container");
@@ -168,20 +178,38 @@ input[type="number"].product-quantity {
 
 
         function generateQR() {
-            // Generate QR codes for each product name
-            const productNames = document.querySelectorAll(".product-name");
-            const qrCodesContainer = document.getElementById("qr-codes");
-            qrCodesContainer.innerHTML = ""; // Clear previous QR codes
-            productNames.forEach(input => {
-                const productName = input.value.trim();
-                if (productName !== "") {
-                    const qrCode = document.createElement("img");
-                    // Generate QR code using productName
-                    qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(productName)}&size=100x100`;
-                    qrCodesContainer.appendChild(qrCode);
-                }
-            });
+    // Get the current date and time
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+
+    // Generate QR codes for each product
+    const products = document.querySelectorAll('.input-container');
+    const qrCodesContainer = document.getElementById("qr-codes");
+    qrCodesContainer.innerHTML = ""; // Clear previous QR codes
+
+    products.forEach(product => {
+        const productName = product.querySelector('.product-name').value.trim();
+        const productPrice = parseFloat(product.querySelector('.product-price').value) || 0;
+        const productQuantity = parseInt(product.querySelector('.product-quantity').value) || 1;
+
+        if (productName !== "") {
+            // Format product information as table columns
+            const qrData = `Product: ${productName}\nPrice: ₹${productPrice.toFixed(2)}\nQuantity: ${productQuantity}\nDate: ${currentDate}\nTime: ${currentTime}`;
+
+            // Create QR code element
+            const qrCode = document.createElement("img");
+            qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrData)}&size=100x100`;
+            qrCodesContainer.appendChild(qrCode);
         }
+
+        function exportData() {
+        window.location.href = "export_page.html";
+    }
+
+    });
+}
+
+         
     </script>
 </body>
 </html>
