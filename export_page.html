@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarCode Scanner</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <header>
+        <h1>Warehouse Management System</h1>
+    </header>
+    <main>
+        <h2>Generate QR Code</h2>
+        <div id="qr-code"></div>
+        <button id="startScanButton">Start Scan</button>
+        <div id="scannedProducts"></div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Warehouse Management System</p>
+    </footer>
+    <script src="script.js"></script>
+    <script>
+        // Check if the WebUSB API is supported by the browser
+        if ('usb' in navigator) {
+            // Request access to USB devices
+            navigator.usb.requestDevice({ filters: [] })
+            .then(device => {
+                // Barcode scanner detected
+                console.log('Barcode scanner connected:', device);
+                document.getElementById('status').innerText = 'Barcode scanner detected';
+            })
+            .catch(error => {
+                // Barcode scanner not detected or user denied permission
+                console.error('Error detecting barcode scanner:', error);
+                document.getElementById('status').innerText = 'Barcode scanner not detected';
+            });
+        } else {
+            // WebUSB API not supported
+            console.error('WebUSB not supported by this browser');
+            document.getElementById('status').innerText = 'WebUSB not supported';
+        }
+    
+        // Function to handle the start scan button click event
+        document.getElementById("startScanButton").addEventListener("click", function() {
+            // Simulate the scanning process by capturing input from a text field
+            var scannedProductCode = prompt("Please scan the product (Enter a product code):");
+            // Assuming you have a function to add scanned products to the list
+            addScannedProduct(scannedProductCode);
+        });
+
+        // Function to add scanned product to the list
+        function addScannedProduct(productCode) {
+            // Assuming you have a container element to display scanned products
+            var scannedProductsContainer = document.getElementById("scannedProducts");
+            // Create a new element to display the scanned product code
+            var productItem = document.createElement("div");
+            productItem.textContent = "Scanned Product: " + productCode;
+            // Append the product item to the container
+            scannedProductsContainer.appendChild(productItem);
+        }
+    </script>
+</body>
+</html>
